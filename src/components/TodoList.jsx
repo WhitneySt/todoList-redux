@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteTodoAction,
@@ -11,7 +11,9 @@ const TodoList = () => {
 
   const dispatch = useDispatch();
 
-  const { todoList } = useSelector((store) => store.toDo);
+  const [taskList, setTaskList] = useState([]);
+
+  const { todoList, filteredTodo } = useSelector((store) => store.toDo);
 
   // useEffect(() => {
   //     todoList.forEach(item => {
@@ -21,6 +23,14 @@ const TodoList = () => {
   //         }));
   //     })
   // },[todoList])
+
+  useEffect(() => {
+    if (filteredTodo.length) {
+      setTaskList([...filteredTodo]);
+    } else {
+      setTaskList([...todoList]);
+    }
+  }, [todoList, filteredTodo]);
 
   const handleDelete = (id) => {
     dispatch(deleteTodoAction(id));
@@ -32,7 +42,7 @@ const TodoList = () => {
 
   return (
     <form>
-      {todoList.map((item) => (
+      {taskList.map((item) => (
         <div key={item.id}>
           <label>
             <input

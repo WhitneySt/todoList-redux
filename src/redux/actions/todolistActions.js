@@ -47,3 +47,10 @@ export const updateTodoAction = (updatedTask) => {
     }
     
 }
+
+export const filterTodoAction = (status) => {
+    return {
+        type: todoTypes.FILTER_STATUS,
+        payload: status
+    }
+}

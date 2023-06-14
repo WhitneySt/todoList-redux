@@ -2,6 +2,7 @@ import { todoTypes } from "../type/todolistTypes";
 
 const initialValue = {
   isEdit: null,
+  filteredTodo: [],
   todoList: [
     {
       id: 1,
@@ -24,7 +25,6 @@ const initialValue = {
 export const todolistReducer = (state = initialValue, action) => {
   switch (action.type) {
     case todoTypes.UPDATE_STATUS:
-
       const updateTodo = state.todoList.map((item) => {
         if (action.payload === item.id) {
           return {
@@ -42,51 +42,59 @@ export const todolistReducer = (state = initialValue, action) => {
       };
 
     case todoTypes.CREATE_TODO:
-
       const newTask = {
         ...action.payload,
         id: state.todoList.length + 1,
-        status: false
-      }
+        status: false,
+      };
 
       return {
         ...state,
-        todoList:[...state.todoList, newTask]
-      }
-    
-    case todoTypes.DELETE_TODO:
+        todoList: [...state.todoList, newTask],
+      };
 
-      const deleteTodo = state.todoList.filter(item => item.id !== action.payload);
+    case todoTypes.DELETE_TODO:
+      const deleteTodo = state.todoList.filter(
+        (item) => item.id !== action.payload
+      );
 
       return {
         ...state,
         todoList: deleteTodo,
       };
-    
-    case todoTypes.HANDLE_ISEDIT:
 
+    case todoTypes.HANDLE_ISEDIT:
       return {
         ...state,
         isEdit: action.payload,
-        todoList: state.todoList
       };
-    
-    case todoTypes.UPDATE_TODO:
 
-      const updatedTodo = state.todoList.map(item => {
+    case todoTypes.UPDATE_TODO:
+      const updatedTodo = state.todoList.map((item) => {
         if (action.payload.id === item.id) {
           return action.payload;
         } else {
           return item;
         }
-      })
+      });
 
       return {
         ...state,
         isEdit: null,
         todoList: updatedTodo,
       };
-    
+
+    case todoTypes.FILTER_STATUS:
+      const filteredToDo =
+        action.payload === "all"
+          ? []
+          : state.todoList.filter((item) => item.status === action.payload);
+
+      return {
+        ...state,
+        filteredTodo: filteredToDo,
+      };
+
     default:
       return state;
   }
